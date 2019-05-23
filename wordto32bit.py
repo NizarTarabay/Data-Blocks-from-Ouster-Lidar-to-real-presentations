@@ -1,3 +1,5 @@
+# Added a comment
+
 import csv
 import os
 import numpy as np
@@ -88,5 +90,5 @@ for thirtytwobit in word6:
 
 import matplotlib.pyplot as plt
 plt.plot(float_xacc)
-plt.ylabel('x_axis angular velocity (deg per second)')
+plt.ylabel('x_axis angular velocity (deg per second)__')
 plt.show()
