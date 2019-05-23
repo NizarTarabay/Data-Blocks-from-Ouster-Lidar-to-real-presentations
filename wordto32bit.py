@@ -92,3 +92,8 @@ import matplotlib.pyplot as plt
 plt.plot(float_xacc)
 plt.ylabel('x_axis angular velocity (deg per second)__')
 plt.show()
+
+import matplotlib.pyplot as plt
+plt.plot(float_xacc)
+plt.ylabel('x_axis angular velocity (deg per second)__')
+plt.show()
