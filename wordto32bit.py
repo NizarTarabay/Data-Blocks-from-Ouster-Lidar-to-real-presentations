@@ -1,5 +1,3 @@
-# Added a comment
-
 import csv
 import os
 import numpy as np
@@ -15,7 +13,7 @@ def reorder(arr, index, n):
     :param n: length of the array
     :return: the ordered array
     '''
-    temp = [0] * n;
+    temp = [0] * n
 
     # arr[i] should be
     # present at index[i] index
@@ -29,6 +27,12 @@ def reorder(arr, index, n):
     return arr
 
 def IMU_data ( file_csv, word):
+    '''
+
+    :param file_csv: bag file convert to csv
+    :param word: # of the word (only 32 bit) from the IMU packets (word takes values: 6-7-8-9-10-11)
+    :return: list, each item in the list is a list with 4 Bytes
+    '''
     with open(file_csv) as csvfile:
         readCSV = csv.reader(csvfile)
         next(readCSV)  # skip header
@@ -47,53 +51,30 @@ def IMU_data ( file_csv, word):
             # print (temp)
             four_bytes = reorder(temp, [3, 2, 1, 0], 4)
             i = 0
-            for word in four_bytes:
+            for word1 in four_bytes:
                 # four_bytes[i] = bin(int(word))
-                data_block[j][i] = "{:08b}".format(int(word))
+                data_block[j][i] = "{:08b}".format(int(word1))
                 i += 1
             j += 1
     return data_block
 
 
+word6 = IMU_data('bagfile-_os1_node_imu_packets.csv', 11)
 
+def convert_Bytes2float (word):
+    '''
 
-with open('bagfile-_os1_node_imu_packets.csv') as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)  # skip header
-    h = sum(1 for row in readCSV)
-
-with open('bagfile-_os1_node_imu_packets.csv') as csvfile:
-    readCSV = csv.reader(csvfile)
-    next(readCSV)  # skip header
-    w = 4
-    word6 = [[1 for x in range(w)] for y in range(h)]
-    j = 0
-    for row in readCSV:
-        row = np.asarray(row)
-        # print (row[25:29])
-        temp = row[45:49]
-        # print (temp)
-        four_bytes = reorder(temp, [3,2,1,0], 4)
-        i = 0
-        for word in four_bytes:
-            # four_bytes[i] = bin(int(word))
-            word6[j][i] = "{:08b}".format(int(word))
-            i += 1
-        j += 1
-
-print(word6)
-i = 0
-float_xacc = []
-for thirtytwobit in word6:
-    four_bytes = ''.join(thirtytwobit[0:4])
-    float_xacc.append(struct.unpack('!f', struct.pack('!I', int(four_bytes, 2)))[0])
+    :param word: one word four Bytes
+    :return: 32 bit float representation of the word
+    '''
+    IMU_float = []
+    for thirtytwobit in word:
+        four_bytes = ''.join(thirtytwobit[0:4])
+        IMU_float.append(struct.unpack('!f', struct.pack('!I', int(four_bytes, 2)))[0])
+    return IMU_float
 
 import matplotlib.pyplot as plt
-plt.plot(float_xacc)
-plt.ylabel('x_axis angular velocity (deg per second)__')
+plt.plot(convert_Bytes2float(word6))
+plt.ylabel('x_axis angular velocity (deg per second)')
 plt.show()
 
-import matplotlib.pyplot as plt
-plt.plot(float_xacc)
-plt.ylabel('x_axis angular velocity (deg per second)__')
-plt.show()
